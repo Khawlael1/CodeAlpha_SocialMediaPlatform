@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+venv/
+ENV/
+env/
+*.sqlite3
+
+# Django
+*.log
+db.sqlite3
+media/
+
+# IDEs
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# pip
+pip-log.txt
+pip-delete-this-directory.txt

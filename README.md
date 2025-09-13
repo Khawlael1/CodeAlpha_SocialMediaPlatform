@@ -1,4 +1,4 @@
-# CodeAlpha_ProjectName
+# CodeAlpha_SocialMediaPlatform
 
 Mini social media app (Django backend + HTML/CSS/JS frontend).
 

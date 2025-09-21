@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ profile.user.username }}'s Profile</title>
+</head>
+<body>
+    <h2>{{ profile.user.username }}'s Profile</h2>
+
+    <img src="{{ profile.avatar.url }}" alt="avatar" width="100">
+    <p><strong>Bio:</strong> {{ profile.bio }}</p>
+
+    {% if user == profile.user %}
+        <a href="{% url 'edit_profile' %}">Edit Profile</a>
+    {% endif %}
+</body>
+</html>

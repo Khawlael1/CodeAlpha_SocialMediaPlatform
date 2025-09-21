@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Profile</title>
+</head>
+<body>
+    <h2>Edit Your Profile</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <textarea name="bio" placeholder="Write your bio">{{ profile.bio }}</textarea><br>
+        <input type="file" name="avatar"><br>
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

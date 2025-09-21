@@ -9,5 +9,6 @@ urlpatterns = [
     path('profile/<str:username>/', views.profile_view, name='profile'),
     path('edit-profile/', views.edit_profile_view, name='edit_profile'),
     path("feed/", views.feed, name="feed"),
+    path("like/<int:post_id>/", views.toggle_like, name="toggle_like"),
 ]
 

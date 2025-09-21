@@ -1,17 +1,94 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
+    <meta charset="UTF-8">
+    <title>Register - LuxSocial</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6c5ce7, #341f97);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .card-register {
+            border-radius: 15px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .card-register h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #341f97;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background-color: #6c5ce7;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #341f97;
+        }
+
+        .text-center a {
+            color: #6c5ce7;
+            text-decoration: none;
+        }
+
+        .text-center a:hover {
+            color: #341f97;
+            text-decoration: underline;
+        }
+
+        .alert {
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
+
+<div class="card-register">
     <h2>Create Account</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
     <form method="POST">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required><br>
-        <input type="password" name="password" placeholder="Password" required><br>
-        <input type="password" name="password2" placeholder="Confirm Password" required><br>
-        <button type="submit">Register</button>
+        <div class="mb-3">
+            <input type="text" name="username" class="form-control" placeholder="Username" required>
+        </div>
+        <div class="mb-3">
+            <input type="password" name="password" class="form-control" placeholder="Password" required>
+        </div>
+        <div class="mb-3">
+            <input type="password" name="password2" class="form-control" placeholder="Confirm Password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Register</button>
     </form>
-    <a href="{% url 'login' %}">Already have an account? Login</a>
+
+    <p class="text-center mt-3">
+        Already have an account? <a href="{% url 'login' %}">Login</a>
+    </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

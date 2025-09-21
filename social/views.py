@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Profile
-from .models import Post
-from .forms import PostForm
+from .models import Post,Comment,Like
+from .forms import PostForm,CommentForm
 
 @login_required
 def profile_view(request, username):
@@ -78,18 +78,41 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-
+#Comment
 @login_required
 def feed(request):
     if request.method == "POST":
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user = request.user
-            post.save()
-            return redirect("feed")
+        if 'post_submit' in request.POST:
+            form = PostForm(request.POST)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.user = request.user
+                post.save()
+                return redirect("feed")
+        elif 'comment_submit' in request.POST:
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.user = request.user
+                comment.post_id = request.POST.get("post_id")
+                comment.save()
+                return redirect("feed")
     else:
         form = PostForm()
+        comment_form = CommentForm()
 
     posts = Post.objects.all().order_by("-created_at")
-    return render(request, "social/feed.html", {"form": form, "posts": posts})
+    return render(request, "social/feed.html", {
+        "form": form,
+        "posts": posts,
+        "comment_form": comment_form
+    })
+
+# Like 
+@login_required
+def toggle_like(request, post_id):
+    post = Post.objects.get(id=post_id)
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
+    if not created:
+        like.delete()  # unlike if already liked
+    return redirect("feed")

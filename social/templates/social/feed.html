@@ -127,6 +127,7 @@
         <a href="{% url 'profile' user.username %}" class="me-3">Profile</a>
         <a href="{% url 'logout' %}">Logout</a>
     </div>
+    
 </nav>
 
 <div class="container-feed">
@@ -151,15 +152,13 @@
                 {{ post.content }}
             </div>
                           
+        <button class="btn btn-light like-btn" data-id="{{ post.id }}">
+        <i class="bi {% if post.liked_by_user %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
+        ❤️ Like
+        <span class="like-count">{{ post.total_likes }}</span>
+    </button>
 
-            <div class="d-flex justify-content-between align-items-center mt-2">
-                    <div>
-                        <a href="{% url 'toggle_like' post.id %}" class="btn btn-sm btn-outline-light">
-                            ❤️ Like
-                        </a>
-                        <span class="ms-2">{{ post.total_likes }} Likes</span>
-                    </div>
-            </div>
+
 
 
             <!-- Comments -->
@@ -176,6 +175,54 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Declare csrftoken once
+    const csrftoken = getCookie('csrftoken');
+
+    // Handle like button clicks
+    $(document).on("click", ".like-btn", function(e) {
+        e.preventDefault();
+        const btn = $(this);
+        const postId = btn.data("id");
+
+        $.ajax({
+            type: "POST",
+            url: `/like/${postId}/`,
+            headers: { "X-CSRFToken": csrftoken }, // use headers instead of data
+            success: function(response) {
+                // Update heart icon
+                if (response.liked) {
+                    btn.find("i").removeClass("bi-heart").addClass("bi-heart-fill text-danger");
+                } else {
+                    btn.find("i").removeClass("bi-heart-fill text-danger").addClass("bi-heart");
+                }
+                // Update like count
+                btn.find(".like-count").text(response.total_likes);
+            },
+            error: function(xhr, status, error) {
+                console.error("Like request failed:", error);
+            }
+        });
+    });
+</script>
+
+
 </body>
 </html>

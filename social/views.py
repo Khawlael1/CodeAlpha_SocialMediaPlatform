@@ -1,17 +1,29 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Profile
-from .models import Post,Comment,Like
+from .models import Post,Comment,Like,Profile,Follow
 from .forms import PostForm,CommentForm
+from django.http import JsonResponse
+
+
 
 @login_required
 def profile_view(request, username):
-    user = User.objects.get(username=username)
-    profile = Profile.objects.get(user=user)
-    return render(request, 'social/profile.html', {'profile': profile})
+    profile_user = get_object_or_404(User, username=username)
+    profile = Profile.objects.get(user=profile_user)
+
+    # True if request.user follows profile_user
+    is_following = Follow.objects.filter(follower=request.user, following=profile_user).exists()
+
+    return render(request, 'social/profile.html', {
+        'profile': profile,
+        'is_following': is_following
+    })
+
+
+
 
 @login_required
 def edit_profile_view(request):
@@ -82,37 +94,62 @@ def logout_view(request):
 @login_required
 def feed(request):
     if request.method == "POST":
-        if 'post_submit' in request.POST:
-            form = PostForm(request.POST)
-            if form.is_valid():
-                post = form.save(commit=False)
-                post.user = request.user
-                post.save()
-                return redirect("feed")
-        elif 'comment_submit' in request.POST:
-            comment_form = CommentForm(request.POST)
-            if comment_form.is_valid():
-                comment = comment_form.save(commit=False)
-                comment.user = request.user
-                comment.post_id = request.POST.get("post_id")
-                comment.save()
-                return redirect("feed")
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            return redirect("feed")
     else:
         form = PostForm()
-        comment_form = CommentForm()
 
     posts = Post.objects.all().order_by("-created_at")
-    return render(request, "social/feed.html", {
-        "form": form,
-        "posts": posts,
-        "comment_form": comment_form
+
+    for post in posts:
+        post.liked_by_user = post.likes.filter(user=request.user).exists()
+
+    return render(request, "social/feed.html", {"form": form, "posts": posts})
+
+    
+# Like 
+
+@login_required
+def like_post(request, post_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required"}, status=400)
+
+    post = get_object_or_404(Post, id=post_id)
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+    if not created:  # Already liked → unlike
+        like.delete()
+        liked = False
+    else:
+        liked = True
+
+    return JsonResponse({
+        "liked": liked,
+        "total_likes": post.likes.count(),
     })
+
 
 # Like 
 @login_required
-def toggle_like(request, post_id):
-    post = Post.objects.get(id=post_id)
-    like, created = Like.objects.get_or_create(user=request.user, post=post)
-    if not created:
-        like.delete()  # unlike if already liked
-    return redirect("feed")
+def toggle_follow(request, username):
+    target_user = get_object_or_404(User, username=username)
+
+    if target_user == request.user:
+        messages.error(request, "You cannot follow yourself!")
+        return redirect("profile", username=username)
+
+    follow, created = Follow.objects.get_or_create(
+        follower=request.user, following=target_user
+    )
+
+    if not created:  # already following → unfollow
+        follow.delete()
+        messages.info(request, f"You unfollowed {target_user.username}")
+    else:
+        messages.success(request, f"You are now following {target_user.username}")
+
+    return redirect("profile", username=username)

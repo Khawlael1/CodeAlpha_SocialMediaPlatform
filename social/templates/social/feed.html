@@ -1,202 +1,347 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Feed - LuxSocial</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #6c5ce7, #341f97);
-            color: white;
-            min-height: 100vh;
-            margin: 0;
-        }
+{% extends 'social/base.html' %}
 
-        .navbar {
-            background-color: rgba(0,0,0,0.4);
-        }
+{% block title %}Feed - Social Media Platform{% endblock %}
 
-        .navbar a {
-            color: #ffeaa7 !important;
-            font-weight: bold;
-        }
-
-        .navbar a:hover {
-            color: #fdcb6e !important;
-        }
-
-        .container-feed {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .post-card {
-            background-color: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            animation: fadeInUp 0.8s ease-out;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        }
-
-        .post-user {
-            font-weight: bold;
-            color: #ffeaa7;
-        }
-
-        .post-time {
-            font-size: 0.9rem;
-            color: #dfe6e9;
-        }
-
-        .post-content {
-            margin-top: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .comment {
-            background-color: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 0.5rem 1rem;
-            margin-bottom: 0.5rem;
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        .comment-user {
-            font-weight: bold;
-            color: #fd79a8;
-        }
-
-        .comment-text {
-            margin-left: 0.5rem;
-        }
-
-        .post-form {
-            background-color: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        .post-form textarea {
-            border-radius: 10px;
-            resize: none;
-        }
-
-        .btn-post {
-            background-color: #6c5ce7;
-            border: none;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-post:hover {
-            background-color: #341f97;
-            transform: scale(1.05);
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(50px);}
-            100% { opacity: 1; transform: translateY(0);}
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0;}
-            100% { opacity: 1;}
-        }
-    </style>
-</head>
-<body>
-
-<nav class="navbar navbar-expand-lg navbar-dark px-4">
-    <a class="navbar-brand" href="{% url 'home' %}">Social Media Platform</a>
-    <div class="ms-auto">
-        <a href="{% url 'profile' user.username %}" class="me-3">Profile</a>
-        <a href="{% url 'logout' %}">Logout</a>
-    </div>
-    
-</nav>
-
-<div class="container-feed">
-
-    <!-- New Post Form -->
-    <div class="post-form">
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-post">Post</button>
-        </form>
-    </div>
-
-    <!-- Feed Posts -->
-    {% for post in posts %}
-        <div class="post-card">
-            <div class="d-flex justify-content-between">
-                <span class="post-user">{{ post.user.username }}</span>
-                <span class="post-time">{{ post.created_at|date:"M d, Y H:i" }}</span>
-            </div>
-            <div class="post-content">
-                {{ post.content }}
-            </div>
-                          
-        <button class="btn btn-light like-btn" data-id="{{ post.id }}">
-        <i class="bi {% if post.liked_by_user %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
-        ❤️ Like
-        <span class="like-count">{{ post.total_likes }}</span>
-    </button>
-
-
-
-
-            <!-- Comments -->
-            {% for comment in post.comment_set.all %}
-                <div class="comment">
-                    <span class="comment-user">{{ comment.user.username }}:</span>
-                    <span class="comment-text">{{ comment.content }}</span>
-                </div>
-            {% endfor %}
-        </div>
-    {% empty %}
-        <p class="text-center mt-4">No posts yet. Be the first to share!</p>
-    {% endfor %}
-
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    // Function to get CSRF token from cookies
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #6c5ce7, #341f97);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    // Declare csrftoken once
-    const csrftoken = getCookie('csrftoken');
+    /* Navbar */
+    .navbar {
+        background-color: #CB9DF0 !important;
+        padding: 10px 20px;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .navbar a, .navbar .navbar-brand {
+        color: white !important;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+    .navbar a:hover {
+        color: #FFF9BF !important;
+    }
 
-    // Handle like button clicks
+    /* Notification Bar */
+    .notification-bar {
+        background: #FFFFFF;
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        color: #333;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* New Post Form - Fabulous style */
+    .post-form {
+        background: #F0C1E1;
+        padding: 25px 20px;
+        border-radius: 25px;
+        box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+        margin-bottom: 30px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .post-form:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+    }
+    .post-form textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 15px;
+        border: 1px solid #ddd;
+        font-size: 1rem;
+        resize: none;
+        transition: all 0.3s;
+    }
+    .post-form textarea:focus {
+        border-color: #CB9DF0;
+        box-shadow: 0 0 12px rgba(203, 157, 240, 0.4);
+        outline: none;
+    }
+
+    .btn-post {
+        background: #CB9DF0;
+        color: white;
+        font-weight: bold;
+        border-radius: 50px;
+        padding: 8px 18px;
+        font-size: 0.95rem;
+        border: none;
+        transition: all 0.3s;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .btn-post:hover {
+        background: #A87DD9;
+        transform: scale(1.05);
+    }
+
+    /* Feed Post Cards */
+    .post-card {
+        background: #FFF;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        padding: 20px;
+        margin-bottom: 25px;
+        transition: all 0.3s;
+    }
+    .post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+    .post-user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        color: #333;
+    }
+    .post-user img {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #CB9DF0;
+    }
+    .post-time {
+        font-size: 0.85rem;
+        color: #999;
+    }
+    .post-content a {
+        text-decoration: none;
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    .post-content a:hover {
+        color: #CB9DF0;
+        text-decoration: underline;
+    }
+
+    .like-btn {
+        background: none;
+        border: none;
+        font-weight: 600;
+        color: #555;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+    .like-btn:hover {
+        color: #CB9DF0;
+    }
+
+    .btn-edit {
+        background: #CB9DF0;
+        color: white;
+        border-radius: 50px;
+        padding: 5px 12px;
+        font-size: 0.85rem;
+    }
+    .btn-edit:hover {
+        background: #A87DD9;
+    }
+    .btn-delete {
+        background: #FDDBBB;
+        color: #333;
+        border-radius: 50px;
+        padding: 5px 12px;
+        font-size: 0.85rem;
+    }
+    .btn-delete:hover {
+        background: #FDC88F;
+    }
+
+    .comments {
+        margin-top: 12px;
+        padding-left: 15px;
+        border-radius: 25px;
+        border-left: 3px solid #FDDBBB;
+    }
+    .comments p {
+        margin-bottom: 6px;
+    }
+    .btn-comment {
+        background: #F0C1E1;
+        color: #333;
+        border-radius: 50px;
+        padding: 5px 12px;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+    .btn-comment:hover {
+        background: #E6B7D1;
+
+    }
+
+    
+    
+    
+    /* Comment Form Inputs - elegant style */
+form.mt-2 input,
+form.mt-2 textarea {
+    border-radius: 25px;           /* fully rounded */
+    padding: 12px 20px;            /* more space inside */
+    border: 1px solid #ddd;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    background: #FFF9BF;           /* subtle background for elegance */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+}
+
+form.mt-2 input:focus,
+form.mt-2 textarea:focus {
+    border-color: #CB9DF0;
+    box-shadow: 0 0 15px rgba(203, 157, 240, 0.4);
+    outline: none;
+}
+
+</style>
+<!-- comment style
+ .comments {
+    margin-top: 12px;
+    padding: 10px 12px;        /* space around all comments */
+    border-radius: 25px;
+    border-left: 3px solid #FDDBBB;
+    background: #FFF9BF;       /* soft background for elegance */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Each comment on its own line */
+.comments p {
+    margin-bottom: 10px;       /* space between comments */
+    padding: 8px 12px;         /* padding inside the bubble */
+    border-radius: 20px;       /* rounded bubble style */
+    background: #F0C1E1;       /* pastel bubble background */
+    color: #333;
+    display: block;            /* ensures each comment is on its own line */
+    width: 100%;               /* stretches across the comment section */
+    word-wrap: break-word;
+}
+
+
+.btn-comment {
+    background: #F0C1E1;
+    color: #333;
+    border-radius: 50px;
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-comment:hover {
+    background: #E6B7D1;
+}
+
+
+    /* Comment Form Inputs - elegant style */
+form.mt-2 input,
+form.mt-2 textarea {
+    border-radius: 25px;           /* fully rounded */
+    padding: 12px 20px;            /* more space inside */
+    border: 1px solid #ddd;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    background: #FFF9BF;           /* subtle background for elegance */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+}
+
+form.mt-2 input:focus,
+form.mt-2 textarea:focus {
+    border-color: #CB9DF0;
+    box-shadow: 0 0 15px rgba(203, 157, 240, 0.4);
+    outline: none;
+}-->
+<!-- Notification Bar -->
+<div class="notification-bar">
+    Welcome back, {{ user.username }}! Share something new.
+</div>
+
+<!-- New Post Form -->
+<div class="post-form">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-post">Post</button>
+    </form>
+</div>
+
+<!-- Feed Posts -->
+{% for post in posts %}
+<div class="post-card" id="post-{{ post.id }}">
+    <div class="post-header">
+        <div class="post-user">
+            <img src="{{ post.user.profile.avatar.url }}" alt="{{ post.user.username }}">
+            <span>{{ post.user.username }}</span>
+        </div>
+        <span class="post-time">{{ post.created_at|date:"M d, Y H:i" }}</span>
+    </div>
+
+    <div class="post-content mb-3">
+        <a href="{% url 'post_detail' post.id %}">{{ post.content|truncatewords:15 }}</a>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <button class="like-btn" data-id="{{ post.id }}">
+            <i class="bi {% if post.liked_by_user %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
+            ❤️ Like
+            <span class="like-count">{{ post.likes.count }}</span>
+        </button>
+
+        {% if post.user == user %}
+            <a href="{% url 'edit_post' post.id %}" class="btn btn-edit">Edit</a>
+            <a href="{% url 'delete_post' post.id %}" class="btn btn-delete">Delete</a>
+        {% endif %}
+    </div>
+
+    <!-- Comments -->
+    <div class="comments">
+        {% for comment in post.comments.all %}
+            <p><strong>{{ comment.user.username }}</strong>: {{ comment.text }}</p>
+        {% empty %}
+            <p class="text-muted">No comments yet.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Add Comment Form -->
+    <form action="{% url 'add_comment' post.id %}" method="post" class="mt-2 d-flex gap-2 align-items-center">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button class="btn btn-comment">Comment</button>
+    </form>
+</div>
+{% empty %}
+<p class="text-center mt-4 text-muted">No posts yet. Be the first to share!</p>
+{% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+
     $(document).on("click", ".like-btn", function(e) {
         e.preventDefault();
         const btn = $(this);
@@ -205,24 +350,16 @@
         $.ajax({
             type: "POST",
             url: `/like/${postId}/`,
-            headers: { "X-CSRFToken": csrftoken }, // use headers instead of data
+            headers: { "X-CSRFToken": csrftoken },
             success: function(response) {
-                // Update heart icon
                 if (response.liked) {
                     btn.find("i").removeClass("bi-heart").addClass("bi-heart-fill text-danger");
                 } else {
                     btn.find("i").removeClass("bi-heart-fill text-danger").addClass("bi-heart");
                 }
-                // Update like count
                 btn.find(".like-count").text(response.total_likes);
-            },
-            error: function(xhr, status, error) {
-                console.error("Like request failed:", error);
             }
         });
     });
 </script>
-
-
-</body>
-</html>
+{% endblock %}

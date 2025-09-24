@@ -1,0 +1,96 @@
+{% extends 'social/feed.html' %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: #FFF9BF;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .edit-post-container {
+        max-width: 600px;
+        margin: 50px auto;
+        background: #F0C1E1;
+        padding: 30px 25px;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .edit-post-container:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+        font-weight: 700;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    input[type="text"], textarea {
+        padding: 10px 15px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        width: 100%;
+        font-size: 1rem;
+        transition: border 0.3s, box-shadow 0.3s;
+    }
+    input[type="text"]:focus, textarea:focus {
+        border-color: #CB9DF0;
+        box-shadow: 0 0 8px rgba(203, 157, 240, 0.5);
+        outline: none;
+    }
+
+    .btn-save {
+        background: #CB9DF0;
+        color: white;
+        font-weight: 600;
+        border-radius: 50px;
+        padding: 8px 20px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        cursor: pointer;
+        border: none; 
+    }
+    .btn-save:hover {
+        background: #A87DD9;
+        transform: scale(1.05);
+    }
+
+    .btn-cancel {
+        background: #FDDBBB;
+        color: #333;
+        font-weight: 600;
+        border-radius: 50px;
+        padding: 8px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        margin-top: 5px;
+    }
+    .btn-cancel:hover {
+        background: #FDC88F;
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="edit-post-container">
+    <h2>Edit Post</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-save">Save Changes</button>
+    </form>
+    <a href="{% url 'feed' %}" class="btn-cancel mt-2">Cancel</a>
+</div>
+{% endblock %}

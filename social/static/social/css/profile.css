@@ -1,0 +1,79 @@
+
+
+     body {
+            background: linear-gradient(135deg, #6c5ce7, #341f97);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .profile-card img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover; /* Keeps aspect ratio while cropping excess */
+            border-radius: 50%;
+            border: 5px solid #6c5ce7;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin-bottom: 1rem;
+        }
+
+        .btn-follow {
+            margin-top: 1rem;
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .edit-btn {
+            margin-top: 1rem;
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            
+        }
+
+        .stats {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-around;
+        }
+        /* Profile Buttons - Follow / Unfollow */
+        .btn-follow {
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        
+        }
+
+        /* Follow button style */
+        .btn-follow.follow {
+            background: #CB9DF0;
+        }
+
+        .btn-follow.follow:hover {
+            background: #A87DD9;
+        }
+
+        /* Unfollow button style */
+        .btn-follow.unfollow {
+            background: #FDDBBB;
+            color: #333;
+        }
+
+        .btn-follow.unfollow:hover {
+            background: #FDC88F;
+        }

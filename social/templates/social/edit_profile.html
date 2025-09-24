@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile - LuxSocial</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'social/css/edit_profile.css' %}">
+</head>
+<body>
+
+<div class="edit-card">
+    <h2>Edit Your Profile</h2>
+
+    <!-- Show current avatar -->
+    {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}" alt="Profile Picture" class="avatar-preview">
+    {% else %}
+        <img src="{% static 'images/default-avatar.png' %}" alt="Default Avatar" class="avatar-preview">
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Bio -->
+        <textarea name="bio" placeholder="Write your bio...">{{ profile.bio }}</textarea>
+
+        <!-- Avatar Upload -->
+        <input type="file" name="avatar" class="form-control">
+
+        <!-- Save Button -->
+        <button type="submit" class="btn btn-save mt-3">💾 Save</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

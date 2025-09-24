@@ -1,0 +1,102 @@
+ body {
+            background: #FFF9BF;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .notif-card {
+            background: #F0C1E1;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .notif-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .notif-card.like {
+            background: #FDDBBB;
+        }
+
+        .notif-card a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notif-card a:hover {
+            color: #CB9DF0;
+        }
+
+        .notif-time {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .btn-back {
+            background: #CB9DF0;
+            color: white;
+            font-weight: 600;
+            border-radius: 25px;
+            padding: 8px 20px;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background: #A87DD9;
+            transform: scale(1.05);
+        }
+
+        .alert {
+            border-radius: 15px;
+        }
+
+         /* Base message style */
+        .custom-alert {
+            padding: 12px 20px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .custom-alert.success {
+            background: #CB9DF0;
+            color: white;
+        }
+
+        .custom-alert.error, .custom-alert.danger {
+            background: #FDDBBB;
+            color: #333;
+        }
+
+        .custom-alert.info {
+            background: #F0C1E1;
+            color: #333;
+        }
+
+        .custom-alert.warning {
+            background: #FFF9BF;
+            color: #333;
+        }
+
+        .custom-alert:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }

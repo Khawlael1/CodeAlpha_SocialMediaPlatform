@@ -1,0 +1,133 @@
+/* Colors  */
+:root {
+    --sand-tan: #e1b382;
+    --sand-shadow: #c89666;
+    --night-blue: #2d545e;
+    --night-shadow: #12343b;
+}
+
+/* Feed Layout */
+.feed-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+/* Post Form */
+.post-form {
+    background: var(--night-blue);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.btn-post {
+    background: var(--sand-tan);
+    color: var(--night-shadow);
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    transition: 0.3s;
+}
+.btn-post:hover {
+    background: var(--sand-shadow);
+    color: white;
+}
+
+/* Post Card */
+.post-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+.post-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Post Header */
+.post-header {
+    font-size: 0.9rem;
+    color: var(--night-shadow);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+.post-user {
+    font-weight: bold;
+    color: var(--night-blue);
+}
+.post-time {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Post Content */
+.post-content {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+.post-content a {
+    text-decoration: none;
+    color: var(--night-blue);
+}
+.post-content a:hover {
+    color: var(--sand-shadow);
+    text-decoration: underline;
+}
+
+/* Actions */
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.btn-like {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--night-shadow);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.btn-action {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.btn-action.edit {
+    background: var(--sand-tan);
+    color: var(--night-shadow);
+}
+.btn-action.edit:hover {
+    background: var(--sand-shadow);
+    color: white;
+}
+.btn-action.delete {
+    background: #dc3545;
+    color: white;
+}
+.btn-action.delete:hover {
+    background: #a71d2a;
+}
+
+/* Comments */
+.comments {
+    margin-top: 1rem;
+    padding: 0.7rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+.comment-form textarea,
+.comment-form input {
+    border-radius: 8px;
+}

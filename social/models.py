@@ -10,11 +10,20 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', default='avatars/default.png')
+    
 
     def __str__(self):
         return self.user.username
 
+# profile will be created automatically every time we register a user
 
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    else:
+        instance.profile.save()
+        
 # Posts made by users
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
@@ -69,12 +78,23 @@ class Follow(models.Model):
     def __str__(self):
         return f"{self.follower.username} follows {self.following.username}"
 
-# profile will be created automatically every time we register a user
 
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-    else:
-        instance.profile.save()
 
+# notification
+
+class Notification(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')  # who triggered it
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
+    comment = models.ForeignKey("Comment", on_delete=models.CASCADE, null=True, blank=True)  
+    type = models.CharField(max_length=20)  # "comment", "like"
+    created_at = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.type == "comment" and self.comment:
+            return f"{self.sender.username} commented: {self.comment.text}"
+        elif self.type == "like":
+            return f"{self.sender.username} liked your post"
+        return f"Notification for {self.user.username}"

@@ -1,0 +1,159 @@
+
+
+/* ---------- Body ---------- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #6c5ce7, #341f97);
+    color: white;
+    min-height: 100vh;
+    margin: 0;
+}
+
+
+    /* Navigation Bar */
+    .navbar {
+        background-color: #CB9DF0 !important;
+        padding: 10px 20px;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .navbar a, .navbar .navbar-brand {
+        color: white !important;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .navbar a:hover {
+        color: #FFF9BF !important; /* soft yellow highlight on hover */
+    }
+
+    /* Optional: dropdowns or nav items */
+    .navbar .dropdown-menu {
+        background-color: #F0C1E1;
+        border-radius: 12px;
+    }
+    .navbar .dropdown-item:hover {
+        background-color: #FDDBBB;
+        color: #333 !important;
+    }
+
+
+
+/* ---------- Feed Container ---------- */
+.container-feed {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* ---------- Post Card ---------- */
+.post-card {
+    background-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    opacity: 0; /* Start hidden for animation */
+    transform: translateY(50px); /* Start position */
+    animation: fadeInUp 0.8s ease-out forwards;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+/* ---------- Post Header ---------- */
+.post-user {
+    font-weight: bold;
+    color: #ffeaa7;
+}
+
+.post-time {
+    font-size: 0.9rem;
+    color: #dfe6e9;
+}
+
+/* ---------- Post Content ---------- */
+.post-content {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* ---------- Comments ---------- */
+.comment {
+    background-color: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+    opacity: 0; /* Start hidden */
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+.comment-user {
+    font-weight: bold;
+    color: #fd79a8;
+}
+
+.comment-text {
+    margin-left: 0.5rem;
+}
+
+/* ---------- New Post Form ---------- */
+.post-form {
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.post-form textarea {
+    border-radius: 10px;
+    resize: none;
+}
+
+/* ---------- Buttons ---------- */
+.btn-post {
+    background-color: #6c5ce7;
+    border: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.btn-post:hover {
+    background-color: #341f97;
+    transform: scale(1.05);
+}
+
+.btn-sm {
+    border-radius: 10px;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
